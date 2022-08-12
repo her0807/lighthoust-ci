@@ -36,7 +36,6 @@ jobs:
       - name: Format lighthouse score
         id: format_lighthouse_score
         uses: actions/github-script@v3
-        working-directory: ${{ env.working-directory }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -78,6 +77,7 @@ jobs:
             });
 
             core.setOutput('comments', comments)
+        working-directory: ${{ env.working-directory }}
 
       - name: comment PR
         uses: unsplash/comment-on-pr@v1.3.0
