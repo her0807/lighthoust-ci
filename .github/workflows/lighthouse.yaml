@@ -77,7 +77,6 @@ jobs:
             });
 
             core.setOutput('comments', comments)
-        working-directory: ${{ env.working-directory }}
 
       - name: comment PR
         uses: unsplash/comment-on-pr@v1.3.0
