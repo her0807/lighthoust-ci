@@ -36,14 +36,12 @@ jobs:
       - name: Format lighthouse score
         id: format_lighthouse_score
         uses: actions/github-script@v3
+        working-directory: ${{ env.working-directory }}
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-
             const fs = require('fs');
-            # 본인의 환경에 맞게 설정해주세요
-            const results = JSON.parse(fs.readFileSync("${{ env.working-directory }}/lhci_reports/manifest.json"));
-            # comment를 담을 변수 입니다.
+            const results = JSON.parse(fs.readFileSync(`${{ env.working-directory }}/lhci_reports/manifest.json`));
             let comments = "";
 
             results.forEach((result) => {
@@ -56,8 +54,6 @@ jobs:
               Object.keys(summary).forEach(
                 (key) => (summary[key] = formatResult(summary[key]))
               );
-
-              # 점수가 색상으로 구분되는 방식 (https://web.dev/performance-scoring/#color-coding)
               const score = (res) => (res >= 90 ? "🟢" : res >= 50 ? "🟠" : "🔴");
 
               const comment = [
@@ -80,8 +76,9 @@ jobs:
               ].join("\n");
               comments += comment + "\n" + detail + "\n";
             });
-            # comments 변수의 값을 다음 job으로 넘겨줍니다.
+
             core.setOutput('comments', comments)
+
       - name: comment PR
         uses: unsplash/comment-on-pr@v1.3.0
         env:
